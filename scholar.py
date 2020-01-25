@@ -183,6 +183,7 @@ except ImportError:
 # Import BeautifulSoup -- try 4 first, fall back to older
 try:
     from bs4 import BeautifulSoup
+    from bs4 import NavigableString, Tag
 except ImportError:
     try:
         from BeautifulSoup import BeautifulSoup
@@ -568,8 +569,11 @@ class ScholarArticleParser120726(ScholarArticleParser):
             if not hasattr(tag, 'name'):
                 continue
             if str(tag).lower().find('.pdf'):
-                if tag.find('div', {'class': 'gs_ttss'}):
-                    self._parse_links(tag.find('div', {'class': 'gs_ttss'}))
+                 if isinstance(tag, NavigableString):
+                    continue
+                 if isinstance(tag, Tag):
+                    if tag.find('div', {'class': 'gs_or_ggsm'}):
+                        self._parse_links(tag.find('div', {'class': 'gs_or_ggsm'}))
 
             if tag.name == 'div' and self._tag_has_class(tag, 'gs_ri'):
                 # There are (at least) two formats here. In the first
